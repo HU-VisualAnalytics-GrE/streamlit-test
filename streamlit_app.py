@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
@@ -69,5 +70,17 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='YlGnBu',
 plt.title('Confusion Matrix for 5-Class Classification')
 plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
-
 st.pyplot(fig)
+
+top_n = 20
+feature_importance = rf_classifier.feature_importances_
+sorted_idx = np.argsort(feature_importance)[-top_n:]
+
+fi_fig, ax = plt.subplots(figsize=(10, 6))
+ax.barh(range(top_n), feature_importance[sorted_idx], align='center', color='skyblue')
+ax.set_yticks(range(top_n))
+ax.set_yticklabels([X.columns[i] for i in sorted_idx])
+ax.set_xlabel('Feature Importance')
+ax.set_title(f'Top {top_n} Feature Importance')
+
+st.pyplot(fi_fig)
